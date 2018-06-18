@@ -1,0 +1,13 @@
+:local(.container) {
+  display: flex;
+  flex-wrap: wrap;
+  height: 100px;
+  width: 100px;
+  background-color: red;
+}
+
+:local(.game) {
+  width: 800px;
+  height: 600px;
+  /* background-color: red; */
+}
