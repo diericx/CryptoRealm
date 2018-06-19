@@ -27,7 +27,10 @@ contract RealmBase {
 
     function RealmBase() {
         // Create base tiles
+
+        // Genesis tile! id = 0
         createTile(0, 0);
+
         createTile(0, -1);
         createTile(0, 1);
         createTile(-1, 0);
@@ -42,13 +45,40 @@ contract RealmBase {
         uint id = tiles.push(Tile(_x, _y)) - 1;
         positionToTileId[_x][_y] = id;
     }
+
+    function tileExists(int _x, int _y) internal view returns(bool) {
+        if (_x != 0 && _y != 0 && (positionToTileId[_x][_y] == 0)) {
+            return false;
+        }
+        return true;
+    }
     
     /** @dev function for creating a new "guy"
       * @return worked Whether or not claim went through
       */
     function ClaimTile(uint _id) public returns(bool) {
-        // require(tileIdToOwner[_id] != address(0));
-        // require(tileIdToOwner[_id] != msg.sender);
+        require(tileIdToOwner[_id] == address(0));
+
+        // If we are claiming a tile for the first time
+        Tile t = tiles[_id];
+        if (!tileExists(t.x+1, t.y)) {
+            createTile(t.x+1, t.y);
+        }
+        if (!tileExists(t.x, t.y+1)) {
+            createTile(t.x, t.y+1);
+        }
+        if (!tileExists(t.x-1, t.y)) {
+            createTile(t.x-1, t.y);
+        }
+        if (!tileExists(t.x, t.y-1)) {
+            createTile(t.x, t.y-1);
+        }
+        if (!tileExists(t.x+1, t.y-1)) {
+            createTile(t.x+1, t.y-1);
+        }
+        if (!tileExists(t.x-1, t.y+1)) {
+            createTile(t.x-1, t.y+1);
+        }
 
         tileIdToOwner[_id] = msg.sender;
         emit UpdatedTile(_id);
