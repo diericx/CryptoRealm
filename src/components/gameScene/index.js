@@ -29,39 +29,37 @@ export default class GameScene extends Phaser.Scene {
         this.context.contracts.RealmBase.methods.GetTile(id).call().then((data) => {
           // Parse data
           let tile = {
+            id,
             owner: data[0].toString(),
             x: data[1].toString(),
             y: data[2].toString()
           }
-          console.log("TILE DATA: ", data)
-          // Add data to tiles object
+          console.log(tile)
+          // Create sprite and add data to the sprite
           if (this.tiles[tile.x] == null) {
             this.tiles[tile.x] = {}
           }
-          this.tiles[tile.x][tile.y] = tile
-          // Create sprite
           var sprite = this.add.sprite(tile.x*24+12, tile.y*24+12, 'tile-empty').setInteractive();
+          sprite.tileData = tile
+          this.tiles[tile.x][tile.y] = sprite
 
-          sprite.on('pointerup', this.onTileClick)
+          // Check for ownership
+          console.log(sprite.tileData.owner)
+          console.log(this.context.props.account)
+          console.log(sprite.tileData.owner === this.context.props.account)
+          if (sprite.tileData.owner === this.context.props.account) {
+            sprite.setTint(0xff0000);
+          }
+
+          sprite.on('pointerup', pointer => {
+            this.context.contracts.RealmBase.methods.ClaimTile(id).send().then((response) => {
+              console.log(response)
+            })
+          })
+
         })
       }
     })
-    // for (let x = 0; x < 10; x++) {
-    //   // create new array for this x position
-    //   for (let y = 0; y < 10; y++) {
-    //     let tileData = state.world[x][y]
-    //     console.log("Tile Data: ", tileData)
-    //     // if (tileData.owner == props.account) {
-
-    //     // }
-    //     // Get the data for this specific tile
-    //     var tile = this.add.sprite(x*24+12, y*24+12, 'tile-empty').setInteractive();
-    //     // var tile = new Phaser.Geom.Rectangle(x*55, y*55, 50, 50);
-    //     // var graphics = this.add.graphics({ fillStyle: { color: 0xff0000 } });
-    //     // graphics.fillRectShape(tile); 
-    //     tile.on('pointerup', this.onTileClick)
-    //   }
-    // }
   }
 
   update() {
@@ -69,9 +67,14 @@ export default class GameScene extends Phaser.Scene {
     
   }
 
-  onTileClick (pointer)
+  claimTile(id) {
+    
+  }
+
+  onTileClick (id)
   {
-    console.log("CLICK")
+    console.log("CLICK: ", this.tileData)
+    this.claimTile(this.tileData.id)
   }
 
 }

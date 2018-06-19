@@ -33,7 +33,6 @@ class ShowRealm extends Component {
   }
 
   render() {
-    console.log("RENDER WOLRD: ", this.state.world)
     // If the data is here, get it and display it
     return (
       <div ref="game" id="game" className={styles.game}>

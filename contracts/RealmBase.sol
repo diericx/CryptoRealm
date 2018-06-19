@@ -7,11 +7,10 @@ contract RealmBase {
     // Imports
     using SafeMath for uint256;
     // Events
-    // event NewGuy(uint guyId, string name, uint dna);
+    event UpdatedTile(uint tileId);
     
     // Structs
     struct Tile {
-        address owner;
         int x;
         int y;
     }
@@ -38,13 +37,19 @@ contract RealmBase {
     function createTile(int _x, int _y) internal {
         // TODO - make sure position isn't already occupied
         //   and that it is valid (next to another tile)
-        uint id = tiles.push(Tile(0, _x, _y)) - 1;
+        uint id = tiles.push(Tile(_x, _y)) - 1;
         positionToTileId[_x][_y] = id;
     }
     
-    //@dev function for creating a new "guy"
-    function ClaimTile(uint _id) public {
+    /** @dev function for creating a new "guy"
+      * @return worked Whether or not claim went through
+      */
+    function ClaimTile(uint _id) public returns(bool) {
+        // require(tileIdToOwner[_id] != address(0));
+        // require(tileIdToOwner[_id] != msg.sender);
+
         tileIdToOwner[_id] = msg.sender;
+        emit UpdatedTile(_id);
         // emit NewGuy(id, _name, _dna);
     }
 
@@ -62,7 +67,7 @@ contract RealmBase {
       * @return y The y position of this tile.
       */
     function GetTile(uint _id) public view returns(address, int, int) {
-        return (tiles[_id].owner, tiles[_id].x, tiles[_id].y);
+        return (tileIdToOwner[_id], tiles[_id].x, tiles[_id].y);
     }
  
 }
