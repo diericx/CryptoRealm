@@ -11,7 +11,7 @@ export default class GameScene extends Phaser.Scene {
 
   preload ()
   {
-    this.load.image('tile-empty', "tile-empty.png");
+    this.load.image('tile-dirt', "tile-dirt.png");
       // this.load.image('asuna', 'assets/sprites/asuna_by_vali233.png');
   }
 
@@ -39,7 +39,10 @@ export default class GameScene extends Phaser.Scene {
           if (this.tiles[tile.x] == null) {
             this.tiles[tile.x] = {}
           }
-          var sprite = this.add.sprite(tile.x*24+12, tile.y*24+12, 'tile-empty').setInteractive();
+          var x = 70 * (Math.sqrt(3) * tile.x  +  Math.sqrt(3)/2 * tile.y)
+          var y = 70 * (3./2 * tile.y)
+
+          var sprite = this.add.sprite(x, y, 'tile-dirt').setInteractive();
           sprite.tileData = tile
           this.tiles[tile.x][tile.y] = sprite
 

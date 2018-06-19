@@ -32,6 +32,8 @@ contract RealmBase {
         createTile(0, 1);
         createTile(-1, 0);
         createTile(1, 0);
+        createTile(1, -1);
+        createTile(-1, 1);
     }
 
     function createTile(int _x, int _y) internal {
